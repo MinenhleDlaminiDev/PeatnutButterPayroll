@@ -22,6 +22,9 @@ const EmployeeForm = () => {
     // State for checkbox
     const [defaultCheckbox, setDefaultCheckbox] = useState(true);
 
+    // state for gross salary
+    const [gross, setGross] = useState("");
+
     // handle change for first name
     const handleFirstNameChange = (e) =>{
         setFirstName(e.target.value);
@@ -58,6 +61,19 @@ const EmployeeForm = () => {
     const handleCancel = () => {
         formref.current.reset();
     };
+
+    // Handle the gross salary formatting
+    const handleFormat = (e) => {
+        // Get value
+        let inputValue = e.target.value;
+        // Remove all non-digit characters
+        inputValue = inputValue.replace(/\D/g, '');
+        // Insert a space after every 3 digits from the right
+        inputValue = inputValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+        //update the state with the formatted value
+        setGross(inputValue);
+
+    }
 
     return ( 
         <div className="">
@@ -111,8 +127,8 @@ const EmployeeForm = () => {
                             <input type="text" name="fullName" value={fullName} disabled/>
                     </div>
                     <div>
-                            <label htmlFor="salary">Gross Salary $PY</label>
-                            <input type="number" name="grossSalary" />
+                            <label htmlFor="grossSalary">Gross Salary $PY</label>
+                            <input type="text" name="grossSalary" value={gross} onChange={(e) => {handleChange(e); handleFormat(e)}}/>
                     </div>
                     <div>
                             <label htmlFor="profileColor">Employee Profile Color</label>
