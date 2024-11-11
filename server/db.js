@@ -16,4 +16,4 @@ pool.connect((err) => {
   }
 })
 
-export default mysql;
+export default pool;
