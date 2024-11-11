@@ -2,8 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { mysql } from "./db.js";
-import { Employee } from "./Employee.js";
+import  mysql  from "./db.js";
 
 // Initialse express, cors and body-parser
 const app = express();
@@ -13,7 +12,7 @@ app.use(bodyParser.json());
 // End Point to get all employees with CATCH for errors
 app.get("/employees", async (req, res) => {
     try{
-        const result = await sql.query(`SELECT * FROM Employees`);
+        const result = await mysql.query(`SELECT * FROM Employees`);
         res.json(result.recordset);
     } catch (err){
         res.status(500).send((err).message);
@@ -31,13 +30,21 @@ app.post("/employee", async (req, res) => {
             ? `UPDATE Employees SET FirstName=@FirstName, LastName=@LastName, Salutation=@Salutation, Gender=@Gender, ProfileColor=@ProfileColor, GrossSalary=@GrossSalary WHERE EmployeeID=EmployeeID`
             :`INSERT INTO Employees (EmployeeID, FirstName, LastName, Salutation, Gender, ProfileColor, GrossSalary) VALUES (@EmployeeID, @FirstName, @LastName, @Salutation, @Gender, @ProfileColor, @GrossSalary )`;
         
-        await sql.query(query);
+        await mysql.query(query, {
+            EmployeeID,
+            FirstName,
+            LastName,
+            Salutation,
+            Gender,
+            ProfileColor,
+            GrossSalary
+        });
 
         // Sending the success code
         res.sendStatus(200);
     } catch (err) {
         // error code
-        res.status(500).send((err as Error).message);
+        res.status(500).send((err).message);
     }
 })
 
