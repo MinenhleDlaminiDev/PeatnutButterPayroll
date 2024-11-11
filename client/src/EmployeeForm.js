@@ -19,6 +19,9 @@ const EmployeeForm = () => {
     const [lastName, setLastName] = useState('');
     const [fullName, setFullName] = useState('');
 
+    // State for checkbox
+    const [defaultCheckbox, setDefaultCheckbox] = useState(true);
+
     // handle change for first name
     const handleFirstNameChange = (e) =>{
         setFirstName(e.target.value);
@@ -53,7 +56,7 @@ const EmployeeForm = () => {
             <form onSubmit={handleSubmit}>
                 <div className="topblock">
                     <button>Cancel</button>
-                    <button>Save</button>
+                    <button style={{backgroundColor:`${employee.profileColor}`}}>Save</button>
                 </div>
                 <div className="leftSide">
                     <div>
@@ -95,9 +98,20 @@ const EmployeeForm = () => {
                     </div>
                 </div>
                 <div className="rightSide">
-                <div>
-                        <label htmlFor="fullName">Full Name</label>
-                        <input type="text" name="fullName" value={fullName} disabled/>
+                    <div>
+                            <label htmlFor="fullName">Full Name</label>
+                            <input type="text" name="fullName" value={fullName} disabled/>
+                    </div>
+                    <div>
+                            <label htmlFor="salary">Gross Salary $PY</label>
+                            <input type="number" name="grossSalary" />
+                    </div>
+                    <div>
+                            <label htmlFor="profileColor">Employee Profile Color</label>
+                            <input type="checkbox" name="profileColor" value="Green" onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Green
+                            <input type="checkbox" name="profileColor" value="Blue" onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Blue
+                            <input type="checkbox" name="profileColor" value="Red" onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Red
+                            <input type="checkbox" name="profileColor" value="" checked={defaultCheckbox} onChange={(e) => {handleChange(e); setDefaultCheckbox(!defaultCheckbox)}}/> Default
                     </div>
                 </div>
 
