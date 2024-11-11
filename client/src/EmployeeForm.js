@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 const EmployeeForm = () => {
+    //------------STATES---------------
     // state for employee
     const [employee, setEmployee] = useState({
         employeeID: "",
@@ -25,6 +26,13 @@ const EmployeeForm = () => {
     // state for gross salary
     const [gross, setGross] = useState("");
 
+
+    // state to store selected value
+    const [selectedValue, setSelectedValue] = useState("");
+
+
+
+    //------------FUNCTIONS-------------
     // handle change for first name
     const handleFirstNameChange = (e) =>{
         setFirstName(e.target.value);
@@ -75,6 +83,15 @@ const EmployeeForm = () => {
 
     }
 
+    // Handle the change event of selected value
+    const handleSelectedValue = (e) => {
+        setSelectedValue(e.target.value)
+    } 
+    
+
+    
+ 
+    console.log(selectedValue);
     return ( 
         <div className="">
             <form onSubmit={handleSubmit} ref={formref}>
@@ -93,26 +110,26 @@ const EmployeeForm = () => {
                     </div>
                     <div>
                         <label htmlFor="salutation">Salutation *</label>
-                        <select name="salutation" onChange={handleChange}>
-                            <option>Dr.</option>
-                            <option>Mr.</option>
-                            <option>Ms.</option>
-                            <option>Mrs.</option>
-                            <option>Mx.</option>
+                        <select name="salutation" value={selectedValue} onChange={(e) => {handleChange(e); handleSelectedValue(e)}}>
+                            <option value="Dr.">Dr.</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Ms.">Ms.</option>
+                            <option value="Mrs.">Mrs.</option>
+                            <option value="Mx.">Mx.</option>
                         </select>
                     </div>
                     <div>
                         <label htmlFor="gender">Gender *</label>
                         <label htmlFor="male">
-                            <input type="radio" name="gender" id="male" />
+                            <input type="radio" name="gender" id="male" checked={selectedValue === "Mr."} onChange={handleChange}/>
                             Male
                         </label>
                         <label htmlFor="female">
-                            <input type="radio" name="gender" id="female" />
+                            <input type="radio" name="gender" id="female" checked={selectedValue === "Ms." || selectedValue === "Mrs."} onChange={handleChange}/>
                             Female
                         </label>
                         <label htmlFor="unspecified">
-                            <input type="radio" name="gender" id="unspecified" />
+                            <input type="radio" name="gender" id="unspecified" checked={selectedValue === "Mx." } onChange={handleChange}/>
                             Unspecified
                         </label>
                     </div>
