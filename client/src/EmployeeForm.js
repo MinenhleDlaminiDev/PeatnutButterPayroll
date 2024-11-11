@@ -1,5 +1,5 @@
 // Imports
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 const EmployeeForm = () => {
@@ -51,11 +51,19 @@ const EmployeeForm = () => {
         //onSave();
     }
 
+    // Clearing the form
+    const formref = useRef();
+
+    // Handle cancel button click
+    const handleCancel = () => {
+        formref.current.reset();
+    };
+
     return ( 
         <div className="">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} ref={formref}>
                 <div className="topblock">
-                    <button>Cancel</button>
+                    <button onClick={handleCancel}>Cancel</button>
                     <button style={{backgroundColor:`${employee.profileColor}`}}>Save</button>
                 </div>
                 <div className="leftSide">
