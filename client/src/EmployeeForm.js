@@ -20,7 +20,7 @@ const EmployeeForm = () => {
     const [lastName, setLastName] = useState('');
     const [fullName, setFullName] = useState('');
 
-    // State for checkbox
+    // State for Default checkbox
     const [defaultCheckbox, setDefaultCheckbox] = useState(true);
 
     // state for gross salary
@@ -29,6 +29,9 @@ const EmployeeForm = () => {
 
     // state to store selected value
     const [selectedValue, setSelectedValue] = useState("");
+
+    // state Alphabetical only
+    const [aplhabeticalOnly, setAlphabeticalOnly] = useState("");
 
 
 
@@ -47,8 +50,6 @@ const EmployeeForm = () => {
     useEffect(() =>{
         setFullName(`${firstName} ${lastName}`);
     }, [firstName, lastName]);
-
-
 
     // handle changes to the inputs
     const handleChange = (e) =>{
@@ -80,18 +81,24 @@ const EmployeeForm = () => {
         inputValue = inputValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
         //update the state with the formatted value
         setGross(inputValue);
-
     }
 
     // Handle the change event of selected value
     const handleSelectedValue = (e) => {
         setSelectedValue(e.target.value)
-    } 
+    }
     
+    // Handle the Alphabetical only inputs
+    const handleAlphabeticalOnly = (e) =>{
+        const input = e.target.value;
 
+        const alphabetRegex = /^[A-Za-z\s]*$/;
+
+        if (alphabetRegex.test(input)) {
+            setAlphabeticalOnly(input);
+          }
+    }
     
- 
-    console.log(selectedValue);
     return ( 
         <div className="">
             <form onSubmit={handleSubmit} ref={formref}>
@@ -102,11 +109,11 @@ const EmployeeForm = () => {
                 <div className="leftSide">
                     <div>
                         <label htmlFor="firstName">First Name(s) *</label>
-                        <input type="text" name="firstName" onChange={(e) => {handleChange(e); handleFirstNameChange(e);}}/>
+                        <input type="text" name="firstName" value={aplhabeticalOnly} onChange={(e) => {handleChange(e); handleFirstNameChange(e); handleAlphabeticalOnly(e);}}/>
                     </div>
                     <div>
                         <label htmlFor="lastName">Last Name *</label>
-                        <input type="text" name="lastName" onChange={(e) => {handleChange(e); handleLastNameChange(e);}}/>
+                        <input type="text" name="lastName" onChange={(e) => {handleChange(e); handleLastNameChange(e); handleAlphabeticalOnly(e);}}/>
                     </div>
                     <div>
                         <label htmlFor="salutation">Salutation *</label>
