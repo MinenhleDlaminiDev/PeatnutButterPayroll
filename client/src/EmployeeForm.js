@@ -64,13 +64,26 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
         }
       }, [selectedEmployee]);
 
+      // Use effect to update the state value of which radio button is switched immediately
+      useEffect(() => {
+        if (employee.gender) {
+            setSelectedGender(employee.gender);
+            if (employee.gender === "male") {
+                setSelectedValue("Mr.");
+            } else if (employee.gender === "female") {
+                if (employee.salutation === "Ms." || employee.salutation === "Mrs.") {
+                    setSelectedValue(employee.salutation);
+                }
+            } else if (employee.gender === "unspecified") {
+                setSelectedValue("Mx.");
+            }
+        }
+    }, [employee.gender, employee.salutation]); 
+
     // handle changes to the inputs
     const handleChange = (e) =>{
         setEmployee({...employee, [e.target.name]: e.target.value});
     }
-
-    
-    
 
     // handle the submitting the form
     const handleSubmit = async(e) => {
@@ -149,13 +162,16 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
     useEffect(() => {
         setSelectedValue(selectedValue);
 
-        if(selectedValue === "Mr."){
+        if (selectedValue === "Mr.") {
             setSelectedGender("male");
-        }else if (selectedValue === "Ms." || selectedValue === "Mrs."){
+            setEmployee((prev) => ({ ...prev, gender: "male" }));
+        } else if (selectedValue === "Ms." || selectedValue === "Mrs.") {
             setSelectedGender("female");
-        }else if (selectedValue === "Mx."){
-            setSelectedGender("unspecified")
-        } 
+            setEmployee((prev) => ({ ...prev, gender: "female" }));
+        } else if (selectedValue === "Mx.") {
+            setSelectedGender("unspecified");
+            setEmployee((prev) => ({ ...prev, gender: "unspecified" }));
+        }
     },[selectedValue])
     
     // Handle the Alphabetical only inputs
