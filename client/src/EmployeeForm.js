@@ -15,6 +15,12 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
         grossSalary: "",
     });
 
+    // State for form validation errors
+    const [errors, setErrors] = useState({
+        firstName: "",
+        lastName: "",
+    });
+
     // state for fullname
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -34,14 +40,41 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
 
 
     //------------FUNCTIONS-------------
+
+    // Validate first name (only alphabets allowed)
+    const validateFirstName = (name) => {
+        const regex = /^[a-zA-Z]+$/;
+        return regex.test(name) ? "" : "First name can only contain letters.";
+    };
+    
+        // Validate last name (only alphabets allowed)
+    const validateLastName = (name) => {
+        const regex = /^[a-zA-Z]+$/;
+        return regex.test(name) ? "" : "Last name can only contain letters.";
+    };
+
     // handle change for first name
     const handleFirstNameChange = (e) =>{
-        setFirstName(e.target.value);
+        const value = e.target.value;
+        setFirstName(value);
+
+        // Validate and set error for first name
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            firstName: validateFirstName(value),
+        }));
     }
 
     // handle change for last name
     const handleLastNameChange = (e) =>{
-        setLastName(e.target.value);
+        const value = e.target.value;
+        setLastName(value);
+
+        // Validate and set error for last name
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            lastName: validateLastName(value),
+        }));
     }
 
     // Automatically update fullname
@@ -99,6 +132,7 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
                 }
             });
             console.log('Response:', response)
+            alert("Employee has been added/changed")
         } catch (error){
             console.error('Error:', error.response || error.message);
         }
@@ -177,14 +211,18 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
         }
     },[selectedValue])
     
-    // Handle the Alphabetical only inputs
-    const handleAlphabeticalOnly = (e) =>{
-       const hasNumbers = /\d/;
+    // // Handle the Alphabetical only inputs
+    // const handleAlphabeticalOnly = (e) =>{
+    //    const hasNumbers = /\d/;
 
-       if(hasNumbers.test(e.target.value)){
-        alert('only alphabets in First name and Last name fields');
-       }
-    }
+    //    if(hasNumbers.test(e.target.value)){
+    //     alert('only alphabets in First name and Last name fields');
+    //    }
+    // }
+
+
+
+    
 
     return ( 
         <div className="form">
@@ -192,18 +230,21 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
             <form onSubmit={handleSubmit} ref={formRef}>
                 <div className="topblock">
                     <button onClick={handleCancel}>Cancel</button>
-                    <input type="submit" style={{backgroundColor:`${employee.profileColor}`}} value="Save"/>
+                    <input type="submit" style={{backgroundColor:`${employee.profileColor}`}} value="Save" disabled={errors.firstName || errors.lastName} />
                 </div>
                 <div className="main">
                     <div className="leftSide">
                         <div className="content">
                             <label htmlFor="firstName">First Name(s) *</label>
-                            <input type="text" name="firstName" value={employee.firstName} onChange={(e) => {handleChange(e); handleFirstNameChange(e); handleAlphabeticalOnly(e);}} required/>
+                            <input type="text" name="firstName" value={employee.firstName} onChange={(e) => {handleChange(e); handleFirstNameChange(e);}} required/>
+                            
                         </div>
+                        {errors.firstName && <div className="error">{errors.firstName}</div>}
                         <div className="content">
                             <label htmlFor="lastName">Last Name *</label>
-                            <input type="text" name="lastName" value={employee.lastName} onChange={(e) => {handleChange(e); handleLastNameChange(e); handleAlphabeticalOnly(e);}} required/>
+                            <input type="text" name="lastName" value={employee.lastName} onChange={(e) => {handleChange(e); handleLastNameChange(e);}} required/>
                         </div>
+                        {errors.lastName && <div className="error">{errors.lastName}</div>}
                         <div className="content">
                             <label htmlFor="salutation">Salutation *</label>
                             <select name="salutation" value={employee.salutation} onChange={(e) => {handleChange(e); handleSelectedValue(e)}} required>

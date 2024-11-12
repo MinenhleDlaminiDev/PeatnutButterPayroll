@@ -88,3 +88,9 @@ tr.empty-row {
 .selected{
   background-color: #a2d9ff;
 }
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
