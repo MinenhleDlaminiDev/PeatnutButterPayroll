@@ -201,10 +201,10 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
                         </div>
                         <div className="content">
                                 <label htmlFor="profileColor">Employee Profile Color</label>
-                                <input type="checkbox" name="profileColor" value={employee.profileColor} checked={employee.profileColor === "Green"} onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Green
-                                <input type="checkbox" name="profileColor" value={employee.profileColor || "Blue"} onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Blue
-                                <input type="checkbox" name="profileColor" value="Red" onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Red
-                                <input type="checkbox" name="profileColor" value="" onChange={(e) => {handleChange(e); setDefaultCheckbox(!defaultCheckbox)}}/> Default
+                                <input type="checkbox" name="profileColor" value="Green" checked={employee.profileColor === "Green"} onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Green
+                                <input type="checkbox" name="profileColor" value="Blue" checked={employee.profileColor === "Blue"} onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Blue
+                                <input type="checkbox" name="profileColor" value="Red" checked={employee.profileColor === "Red"} onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Red
+                                <input type="checkbox" name="profileColor" value="" checked={employee.profileColor === "" || !employee.profileColor} onChange={(e) => {handleChange(e); setDefaultCheckbox(!defaultCheckbox)}}/> Default
                         </div>
                     </div>
                 </div>
