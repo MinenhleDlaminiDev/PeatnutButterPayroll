@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const EmployeeForm = () => {
+const EmployeeForm = ({ onSave }) => {
     //------------STATES---------------
     // state for employee
     const [employee, setEmployee] = useState({
@@ -70,7 +70,9 @@ const EmployeeForm = () => {
             console.log('Response:', response)
         } catch (error){
             console.error('Error:', error.response || error.message);
-        } 
+        }
+        
+        onSave();
     }
     
     // Clearing the form
@@ -130,6 +132,7 @@ const EmployeeForm = () => {
   
     return ( 
         <div className="">
+            <h4>Employee Information</h4>
             <form onSubmit={handleSubmit} ref={formRef}>
                 <div className="topblock">
                     <button onClick={handleCancel}>Cancel</button>
