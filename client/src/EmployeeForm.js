@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-const EmployeeForm = ({ onSave }) => {
+const EmployeeForm = ({ selectedEmployee, onSave }) => {
     //------------STATES---------------
     // state for employee
     const [employee, setEmployee] = useState({
@@ -29,9 +29,6 @@ const EmployeeForm = ({ onSave }) => {
     // state to store selected value
     const [selectedValue, setSelectedValue] = useState();
 
-    // state Alphabetical only
-    const [aplhabeticalOnly, setAlphabeticalOnly] = useState("");
-
     // state of a checked Radio button
     const [selectedGender, setSelectedGender] = useState("");
 
@@ -52,10 +49,28 @@ const EmployeeForm = ({ onSave }) => {
         setFullName(`${firstName} ${lastName}`);
     }, [firstName, lastName]);
 
+    useEffect(() => {
+        if (selectedEmployee) {
+          setEmployee({
+            employeeID: selectedEmployee.employeeID,
+            firstName: selectedEmployee.firstName,
+            lastName: selectedEmployee.lastName,
+            salutation: selectedEmployee.salutation,
+            gender: selectedEmployee.gender,
+            profileColor: selectedEmployee.profileColor,
+            grossSalary: selectedEmployee.grossSalary,
+            added:selectedEmployee.added
+          });
+        }
+      }, [selectedEmployee]);
+
     // handle changes to the inputs
     const handleChange = (e) =>{
         setEmployee({...employee, [e.target.name]: e.target.value});
     }
+
+    
+    
 
     // handle the submitting the form
     const handleSubmit = async(e) => {
@@ -71,7 +86,6 @@ const EmployeeForm = ({ onSave }) => {
         } catch (error){
             console.error('Error:', error.response || error.message);
         }
-        
         onSave();
     }
     
@@ -82,11 +96,7 @@ const EmployeeForm = ({ onSave }) => {
     const handleCancel = (e) => {
         e.preventDefault();
         formRef.current.reset();
-        setGross("");
-        setAlphabeticalOnly("");
-        setFullName("");
-        setSelectedValue("");
-        setDefaultCheckbox(true);
+        employee.firstName = "SLeg";
     };
 
     // Handle the gross salary formatting
@@ -99,6 +109,11 @@ const EmployeeForm = ({ onSave }) => {
         inputValue = inputValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
         //update the state with the formatted value
         setGross(inputValue);
+
+        setEmployee({
+            ...employee,
+            grossSalary: inputValue,
+        });
     }
 
     // Handle the change event of selected value
@@ -120,81 +135,79 @@ const EmployeeForm = ({ onSave }) => {
     
     // Handle the Alphabetical only inputs
     const handleAlphabeticalOnly = (e) =>{
-        const input = e.target.value;
+       const hasNumbers = /\d/;
 
-        const alphabetRegex = /^[A-Za-z\s]*$/;
-
-        if (alphabetRegex.test(input)) {
-            setAlphabeticalOnly(input);
-          }
+       if(hasNumbers.test(e.target.value)){
+        alert('only alphabets in First name and Last name fields');
+       }
     }
-    
-  
+
     return ( 
-        <div className="">
+        <div className="form">
             <h4>Employee Information</h4>
             <form onSubmit={handleSubmit} ref={formRef}>
                 <div className="topblock">
                     <button onClick={handleCancel}>Cancel</button>
                     <input type="submit" style={{backgroundColor:`${employee.profileColor}`}} value="Save"/>
                 </div>
-                <div className="leftSide">
-                    <div>
-                        <label htmlFor="firstName">First Name(s) *</label>
-                        <input type="text" name="firstName" value={aplhabeticalOnly} onChange={(e) => {handleChange(e); handleFirstNameChange(e); handleAlphabeticalOnly(e);}}/>
+                <div className="main">
+                    <div className="leftSide">
+                        <div className="content">
+                            <label htmlFor="firstName">First Name(s) *</label>
+                            <input type="text" name="firstName" value={employee.firstName} onChange={(e) => {handleChange(e); handleFirstNameChange(e); handleAlphabeticalOnly(e);}} required/>
+                        </div>
+                        <div className="content">
+                            <label htmlFor="lastName">Last Name *</label>
+                            <input type="text" name="lastName" value={employee.lastName} onChange={(e) => {handleChange(e); handleLastNameChange(e); handleAlphabeticalOnly(e);}} required/>
+                        </div>
+                        <div className="content">
+                            <label htmlFor="salutation">Salutation *</label>
+                            <select name="salutation" value={employee.salutation} onChange={(e) => {handleChange(e); handleSelectedValue(e)}} required>
+                                <option value="Dr.">Dr.</option>
+                                <option value="Mr.">Mr.</option>
+                                <option value="Ms.">Ms.</option>
+                                <option value="Mrs.">Mrs.</option>
+                                <option value="Mx.">Mx.</option>
+                            </select>
+                        </div>
+                        <div className="content">
+                            <label htmlFor="gender" >Gender *</label>
+                            <label htmlFor="male">
+                                <input type="radio" name="gender" id="male" value={employee.gender} checked={selectedGender === 'male'} onChange={(e) => {handleChange(e); setSelectedGender("male")}}/>
+                                Male
+                            </label>
+                            <label htmlFor="female">
+                                <input type="radio" name="gender" id="female" value={selectedGender} checked={selectedGender === "female"} onChange={(e) => {handleChange(e); setSelectedGender("female")}}/>
+                                Female
+                            </label>
+                            <label htmlFor="unspecified">
+                                <input type="radio" name="gender" id="unspecified" value={selectedGender} checked={selectedGender === "unspecified"} onChange={(e) => {handleChange(e); setSelectedGender("unspecified")}}/>
+                                Unspecified
+                            </label>
+                        </div>
+                        <div className="content">
+                            <label htmlFor="employeeID">Employee # *</label>
+                            <input type="number" name="employeeID" value={employee.employeeID} onChange={handleChange} style={{textAlign: "right"}}/>
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor="lastName">Last Name *</label>
-                        <input type="text" name="lastName" onChange={(e) => {handleChange(e); handleLastNameChange(e); handleAlphabeticalOnly(e);}} />
-                    </div>
-                    <div>
-                        <label htmlFor="salutation">Salutation *</label>
-                        <select name="salutation" value={selectedValue} onChange={(e) => {handleChange(e); handleSelectedValue(e)}}>
-                            <option value="Dr.">Dr.</option>
-                            <option value="Mr.">Mr.</option>
-                            <option value="Ms.">Ms.</option>
-                            <option value="Mrs.">Mrs.</option>
-                            <option value="Mx.">Mx.</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label htmlFor="gender" >Gender *</label>
-                        <label htmlFor="male">
-                            <input type="radio" name="gender" id="male" value={selectedGender} checked={selectedGender === 'male'} onChange={(e) => {handleChange(e); setSelectedGender("male")}}/>
-                            Male
-                        </label>
-                        <label htmlFor="female">
-                            <input type="radio" name="gender" id="female" value={selectedGender} checked={selectedGender === "female"} onChange={(e) => {handleChange(e); setSelectedGender("female")}}/>
-                            Female
-                        </label>
-                        <label htmlFor="unspecified">
-                            <input type="radio" name="gender" id="unspecified" value={selectedGender} checked={selectedGender === "unspecified"} onChange={(e) => {handleChange(e); setSelectedGender("unspecified")}}/>
-                            Unspecified
-                        </label>
-                    </div>
-                    <div>
-                        <label htmlFor="employeeID">Employee # *</label>
-                        <input type="number" name="employeeID" onChange={handleChange}/>
+                    <div className="rightSide">
+                        <div className="content">
+                                <label htmlFor="fullName">Full Name</label>
+                                <input type="text" name="fullName" value={fullName} disabled/>
+                        </div>
+                        <div className="content">
+                                <label htmlFor="grossSalary">Gross Salary $PY</label>
+                                <input type="text" name="grossSalary" value={employee.grossSalary === "" ? gross: employee.grossSalary} onChange={(e) => {handleFormat(e)}} style={{textAlign: "right"}}/>
+                        </div>
+                        <div className="content">
+                                <label htmlFor="profileColor">Employee Profile Color</label>
+                                <input type="checkbox" name="profileColor" value={employee.profileColor} checked={employee.profileColor === "Green"} onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Green
+                                <input type="checkbox" name="profileColor" value={employee.profileColor || "Blue"} onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Blue
+                                <input type="checkbox" name="profileColor" value="Red" onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Red
+                                <input type="checkbox" name="profileColor" value="" onChange={(e) => {handleChange(e); setDefaultCheckbox(!defaultCheckbox)}}/> Default
+                        </div>
                     </div>
                 </div>
-                <div className="rightSide">
-                    <div>
-                            <label htmlFor="fullName">Full Name</label>
-                            <input type="text" name="fullName" value={fullName} disabled/>
-                    </div>
-                    <div>
-                            <label htmlFor="grossSalary">Gross Salary $PY</label>
-                            <input type="text" name="grossSalary" value={gross} onChange={(e) => {handleChange(e); handleFormat(e)}}/>
-                    </div>
-                    <div>
-                            <label htmlFor="profileColor">Employee Profile Color</label>
-                            <input type="checkbox" name="profileColor" value="Green" onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Green
-                            <input type="checkbox" name="profileColor" value="Blue" onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Blue
-                            <input type="checkbox" name="profileColor" value="Red" onChange={(e) => {handleChange(e); setDefaultCheckbox(false)}}/> Red
-                            <input type="checkbox" name="profileColor" value="" checked={defaultCheckbox} onChange={(e) => {handleChange(e); setDefaultCheckbox(!defaultCheckbox)}}/> Default
-                    </div>
-                </div>
-
             </form>
         </div>
      );
