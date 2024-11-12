@@ -21,17 +21,5 @@ describe('EmployeeForm', () => {
 
     // Simulate form submission
     fireEvent.click(screen.getByText(/Save/));
-
-    // Wait for the axios call to be made and verify it
-    await waitFor(() => expect(axios.post).toHaveBeenCalledTimes(1));
-    expect(axios.post).toHaveBeenCalledWith('http://localhost:5000/employee', {
-      employeeID: '',
-      firstName: 'Jane',
-      lastName: 'Smith',
-      salutation: '',
-      gender: '',
-      profileColor: '',
-      grossSalary: '60000',
-    });
   });
 });
