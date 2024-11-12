@@ -96,7 +96,32 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
     const handleCancel = (e) => {
         e.preventDefault();
         formRef.current.reset();
-        employee.firstName = "SLeg";
+        
+         // Reset the states to their initial values
+        setEmployee({
+            employeeID: "",
+            firstName: "",
+            lastName: "",
+            salutation: "",
+            gender: "",
+            profileColor: "",
+            grossSalary: "",
+        });
+
+        // Reset the FullName state
+        setFullName("");
+
+        // Reset the selected gender
+        setSelectedGender("");
+
+        // Reset the selected salutation
+        setSelectedValue("");
+
+        // Reset the default checkbox
+        setDefaultCheckbox(true);
+
+        // Reset the gross salary state
+        setGross("");
     };
 
     // Handle the gross salary formatting
