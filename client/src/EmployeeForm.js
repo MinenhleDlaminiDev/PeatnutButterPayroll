@@ -61,6 +61,9 @@ const EmployeeForm = ({ selectedEmployee, onSave }) => {
             grossSalary: selectedEmployee.grossSalary,
             added:selectedEmployee.added
           });
+
+          // Auto populate the fullname 
+          setFullName(`${selectedEmployee.firstName} ${selectedEmployee.lastName}`);
         }
       }, [selectedEmployee]);
 
