@@ -26,13 +26,14 @@ const EmployeeForm = () => {
     // state for gross salary
     const [gross, setGross] = useState("");
 
-
     // state to store selected value
-    const [selectedValue, setSelectedValue] = useState("");
+    const [selectedValue, setSelectedValue] = useState();
 
     // state Alphabetical only
     const [aplhabeticalOnly, setAlphabeticalOnly] = useState("");
 
+    // state of a checked Radio button
+    const [selectedGender, setSelectedGender] = useState("");
 
 
     //------------FUNCTIONS-------------
@@ -57,18 +58,33 @@ const EmployeeForm = () => {
     }
 
     // handle the submitting the form
-    const handleSubmit = async (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        await axios.post("http://localhost:5000/employee", employee);
-        //onSave();
+        console.log(employee);
+        try{
+            const response = await axios.post('http://localhost:5000/employee', employee, {
+                headers:{
+                    'Content-Type': 'application/json',
+                }
+            });
+            console.log('Response:', response)
+        } catch (error){
+            console.error('Error:', error.response || error.message);
+        } 
     }
-
+    
     // Clearing the form
-    const formref = useRef();
+    const formRef = useRef();
 
     // Handle cancel button click
-    const handleCancel = () => {
-        formref.current.reset();
+    const handleCancel = (e) => {
+        e.preventDefault();
+        formRef.current.reset();
+        setGross("");
+        setAlphabeticalOnly("");
+        setFullName("");
+        setSelectedValue("");
+        setDefaultCheckbox(true);
     };
 
     // Handle the gross salary formatting
@@ -87,6 +103,18 @@ const EmployeeForm = () => {
     const handleSelectedValue = (e) => {
         setSelectedValue(e.target.value)
     }
+    // useEffect update select value when it is changed
+    useEffect(() => {
+        setSelectedValue(selectedValue);
+
+        if(selectedValue === "Mr."){
+            setSelectedGender("male");
+        }else if (selectedValue === "Ms." || selectedValue === "Mrs."){
+            setSelectedGender("female");
+        }else if (selectedValue === "Mx."){
+            setSelectedGender("unspecified")
+        } 
+    },[selectedValue])
     
     // Handle the Alphabetical only inputs
     const handleAlphabeticalOnly = (e) =>{
@@ -99,12 +127,13 @@ const EmployeeForm = () => {
           }
     }
     
+  
     return ( 
         <div className="">
-            <form onSubmit={handleSubmit} ref={formref}>
+            <form onSubmit={handleSubmit} ref={formRef}>
                 <div className="topblock">
                     <button onClick={handleCancel}>Cancel</button>
-                    <button style={{backgroundColor:`${employee.profileColor}`}}>Save</button>
+                    <input type="submit" style={{backgroundColor:`${employee.profileColor}`}} value="Save"/>
                 </div>
                 <div className="leftSide">
                     <div>
@@ -113,7 +142,7 @@ const EmployeeForm = () => {
                     </div>
                     <div>
                         <label htmlFor="lastName">Last Name *</label>
-                        <input type="text" name="lastName" onChange={(e) => {handleChange(e); handleLastNameChange(e); handleAlphabeticalOnly(e);}}/>
+                        <input type="text" name="lastName" onChange={(e) => {handleChange(e); handleLastNameChange(e); handleAlphabeticalOnly(e);}} />
                     </div>
                     <div>
                         <label htmlFor="salutation">Salutation *</label>
@@ -126,23 +155,23 @@ const EmployeeForm = () => {
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="gender">Gender *</label>
+                        <label htmlFor="gender" >Gender *</label>
                         <label htmlFor="male">
-                            <input type="radio" name="gender" id="male" checked={selectedValue === "Mr."} onChange={handleChange}/>
+                            <input type="radio" name="gender" id="male" value={selectedGender} checked={selectedGender === 'male'} onChange={(e) => {handleChange(e); setSelectedGender("male")}}/>
                             Male
                         </label>
                         <label htmlFor="female">
-                            <input type="radio" name="gender" id="female" checked={selectedValue === "Ms." || selectedValue === "Mrs."} onChange={handleChange}/>
+                            <input type="radio" name="gender" id="female" value={selectedGender} checked={selectedGender === "female"} onChange={(e) => {handleChange(e); setSelectedGender("female")}}/>
                             Female
                         </label>
                         <label htmlFor="unspecified">
-                            <input type="radio" name="gender" id="unspecified" checked={selectedValue === "Mx." } onChange={handleChange}/>
+                            <input type="radio" name="gender" id="unspecified" value={selectedGender} checked={selectedGender === "unspecified"} onChange={(e) => {handleChange(e); setSelectedGender("unspecified")}}/>
                             Unspecified
                         </label>
                     </div>
                     <div>
-                        <label htmlFor="employeeid">Employee # *</label>
-                        <input type="number" name="employeeid" onChange={handleChange}/>
+                        <label htmlFor="employeeID">Employee # *</label>
+                        <input type="number" name="employeeID" onChange={handleChange}/>
                     </div>
                 </div>
                 <div className="rightSide">
